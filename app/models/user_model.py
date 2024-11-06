@@ -1,7 +1,7 @@
-from pydantic import BaseModel
+from utils.classes import UserBase
 
-
-class User(BaseModel):
+class User(UserBase):
     id: int
-    name: str
-    age: int
+
+    class Config:
+        orm_mode = True

@@ -1,0 +1,44 @@
+# Python files
+__pycache__/
+*.py[cod]
+*.pyd
+*.pyo
+
+# Virtual Environment
+venv/
+env/
+.venv/
+ENV/
+
+# Database files
+*.db
+*.sqlite3
+
+# IDEs and Editors
+.vscode/
+.idea/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Coverage reports
+htmlcov/
+.coverage
+coverage.xml
+*.cover
+
+# MyPy
+.mypy_cache/
+.mypy/
+
+# Dist/Build
+dist/
+build/
+*.egg-info/
+
+# Logs
+*.log
+
+# Python build artifacts
+*.egg
+*.whl

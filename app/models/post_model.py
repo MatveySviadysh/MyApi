@@ -1,8 +1,4 @@
-from pydantic import BaseModel
-from .user_model import User
+from utils.classes import PostBase
 
-class Post(BaseModel):
+class Post(PostBase):
     id: int
-    title: str
-    text: str 
-    author: User
