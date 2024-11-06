@@ -42,3 +42,5 @@ build/
 # Python build artifacts
 *.egg
 *.whl
+env/
+
