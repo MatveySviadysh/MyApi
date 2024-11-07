@@ -3,7 +3,7 @@ from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 from alembic import context
 from database.connect import Base
-from database.models import User, Post
+from database.models import Review,Travel,Order,City,TourGuide,User
 
 target_metadata = Base.metadata
 config = context.config
