@@ -10,7 +10,7 @@ class User(Base):
     age = Column(Integer)
 
     posts = relationship("Post", back_populates="author") 
-
+    
 class Post(Base):
     __tablename__ = "posts"
 

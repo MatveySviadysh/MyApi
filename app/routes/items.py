@@ -40,9 +40,9 @@ def update_post(post_id: int, post_update: PostUpdate, db: Session = Depends(get
         raise HTTPException(status_code=404, detail="Post not found")
     
     if post_update.title is not None:
-        post.title = post_update.title
+        post.title = post_update.title  # type: ignore
     if post_update.text is not None:
-        post.text = post_update.text
+        post.text = post_update.text # type: ignore
 
     db.commit()
     db.refresh(post)

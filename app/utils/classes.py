@@ -9,6 +9,3 @@ class UserBase(BaseModel):
 class PostBase(BaseModel):
     title: Optional[str] = None
     text: Optional[str] = None
-
-    class Config:
-        orm_mode = True
