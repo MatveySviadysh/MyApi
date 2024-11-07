@@ -8,7 +8,7 @@ from utils.helpers import get_db
 post_router = APIRouter()
 
 @post_router.post("/post/create", response_model=PostUpdate)
-def create_post(post: PostCreate, db: Session = Depends(get_db)) -> Post:
+async def create_post(post: PostCreate, db: Session = Depends(get_db)) -> Post:
     db_post = Post(
         title=post.title,
         text=post.text,
@@ -20,12 +20,12 @@ def create_post(post: PostCreate, db: Session = Depends(get_db)) -> Post:
     return db_post
 
 @post_router.get("/post/all", response_model=List[PostUpdate])
-def get_all_posts(db: Session = Depends(get_db)) -> List[Post]:
+async def get_all_posts(db: Session = Depends(get_db)) -> List[Post]:
     posts = db.query(Post).all()
     return posts
 
 @post_router.delete("/post/{post_id}", response_model=dict)
-def delete_post(post_id: int, db: Session = Depends(get_db)):
+async def delete_post(post_id: int, db: Session = Depends(get_db)):
     post = db.query(Post).filter(Post.id == post_id).first()
     if not post:
         raise HTTPException(status_code=404, detail="Post not found")
@@ -34,7 +34,7 @@ def delete_post(post_id: int, db: Session = Depends(get_db)):
     return {"detail": "Post deleted successfully"}
 
 @post_router.put("/post/{post_id}", response_model=PostUpdate)
-def update_post(post_id: int, post_update: PostUpdate, db: Session = Depends(get_db)) -> Post:
+async def update_post(post_id: int, post_update: PostUpdate, db: Session = Depends(get_db)) -> Post:
     post = db.query(Post).filter(Post.id == post_id).first()
     if not post:
         raise HTTPException(status_code=404, detail="Post not found")
