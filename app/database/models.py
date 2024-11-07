@@ -10,7 +10,6 @@ class User(Base):
     name = Column(String, index=True)
     age = Column(Integer)
 
-    posts = relationship("Post", back_populates="author") 
     orders = relationship("Order", back_populates="user")
     reviews = relationship("Review", back_populates="user")
     
