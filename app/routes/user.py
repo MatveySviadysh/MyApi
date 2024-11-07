@@ -17,4 +17,4 @@ async def create_user(
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
-    return User(id=new_user.id, name=new_user.name, age=new_user.age)
+    return User(id=new_user.id, name=new_user.name, age=new_user.age) # type: ignore
