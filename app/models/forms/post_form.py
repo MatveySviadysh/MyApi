@@ -8,14 +8,11 @@ class PostCreate(PostBase):
     class Config:
         orm_mode = True
 
-class PostResponse(PostBase):
-    id: int
-    author_id: int
 
-    class Config:
-        orm_mode = True
 
 class PostUpdate(BaseModel):
+    id: int
+    author_id: int
     title: Optional[str] = None
     text: Optional[str] = None
 
