@@ -19,7 +19,7 @@ class TravelBase(BaseModel):
 
 class TourGuideBase(BaseModel):
     name: str
-    experience_years: str
+    experience_years: int
     bio: Optional[str] = None
     contact_info: str
 
