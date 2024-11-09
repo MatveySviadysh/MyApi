@@ -86,14 +86,3 @@ class Review(Base):
     
     user = relationship("User", back_populates="reviews")
     travel = relationship("Travel", back_populates="reviews")
-
-    
-# class Post(Base):
-#     __tablename__ = "posts"
-
-#     id = Column(Integer, primary_key=True, index=True)
-#     title = Column(String, index=True)
-#     text = Column(String)
-#     author_id = Column(Integer, ForeignKey("users.id"))
-
-#     author = relationship("User", back_populates="posts")
