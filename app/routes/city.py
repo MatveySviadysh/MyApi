@@ -1,7 +1,9 @@
+from typing import List
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
-from database.models import City
+from database.models import City, Travel
 from models.city_model import CityCreate, CityResponse
+from models.travel_model import TravelResponse
 from utils.helpers import get_db
 
 city_router = APIRouter()
@@ -102,3 +104,16 @@ async def update_city(city_id: int, city: CityCreate, db: Session = Depends(get_
     db.commit()
     db.refresh(db_city)
     return db_city
+
+
+@city_router.get('/city/{city_id}/travels', response_model=list[TravelResponse])
+async def get_travels_by_city(city_id: int, db: Session = Depends(get_db)) -> List[Travel]:
+    """
+    поиск вес travels в укащанов гораде.
+
+    - **city_id**: ID города для обновления.
+
+    Возвращает travels в указаном городе.
+    """
+    travels = db.query(Travel).filter(Travel.city_id == city_id).all()
+    return travels

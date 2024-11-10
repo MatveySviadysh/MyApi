@@ -80,3 +80,15 @@ async def update_tour_guide(id: int, tour_guide: TourGuideCreate, db: Session = 
     db.commit()
     db.refresh(db_tour_guide)
     return db_tour_guide
+
+
+@tour_guide_router.get('/tour_guide/{city_id}', response_model=list[TourGuideResponse])
+async def get_guides_by_city(city_id: int, db: Session = Depends(get_db)) -> List[TourGuide]:
+    """
+    Получает список туристических гидов для указанного города по его ID.
+    Этот метод возвращает массив объектов гидов, которые доступны в указанном городе.
+    """
+    tour_guides = db.query(TourGuide).filter(TourGuide.city_id == city_id).all()
+    if not tour_guides:
+        raise HTTPException(status_code=404, detail="No tour guides found for this city")
+    return tour_guides
