@@ -7,7 +7,7 @@ from utils.helpers import get_db
 
 travel_router = APIRouter()
 
-@travel_router.post('/travel/create', response_model=TravelResponse)
+@travel_router.post('/travel/create',  tags=["Travel"], summary="Создает новое путешествие",response_model=TravelResponse)
 async def create_travel(travel: TravelCreate, db: Session = Depends(get_db)) -> TravelResponse:
     """
     Создает новое путешествие.
@@ -46,7 +46,7 @@ async def create_travel(travel: TravelCreate, db: Session = Depends(get_db)) -> 
     return new_travel
 
 
-@travel_router.get('/treves', response_model=list[TravelResponse])
+@travel_router.get('/treves',  tags=["Travel"], summary="Получает список всех путешествий",response_model=list[TravelResponse])
 async def get_treves(db: Session = Depends(get_db)) -> list[Travel]:
     """
     Получает список всех путешествий.
@@ -57,7 +57,7 @@ async def get_treves(db: Session = Depends(get_db)) -> list[Travel]:
     return travels
 
 
-@travel_router.get('/travel/{id}', response_model=TravelResponse)
+@travel_router.get('/travel/{id}',  tags=["Travel"], summary="Ищет путешествие по ID",response_model=TravelResponse)
 async def search_travel(id: int, db: Session = Depends(get_db)) -> Travel:
     """
     Ищет путешествие по ID.
@@ -72,7 +72,7 @@ async def search_travel(id: int, db: Session = Depends(get_db)) -> Travel:
     return travel
 
 
-@travel_router.delete('/travel/{id}', response_model=dict)
+@travel_router.delete('/travel/{id}', tags=["Travel"], summary="Удаляет путешествие по ID", response_model=dict)
 async def delete_travel(id: int, db: Session = Depends(get_db)) -> dict:
     """
     Удаляет путешествие по ID.
@@ -89,7 +89,7 @@ async def delete_travel(id: int, db: Session = Depends(get_db)) -> dict:
     return {"message": "Travel deleted successfully"}
 
 
-@travel_router.put('/travel/{id}', response_model=TravelResponse)
+@travel_router.put('/travel/{id}', tags=["Travel"], summary="Обновляет информацию о путешествии", response_model=TravelResponse)
 async def update_travel(id: int, travel: TravelCreate, db: Session = Depends(get_db)) -> TravelResponse:
     """
     Обновляет информацию о путешествии.

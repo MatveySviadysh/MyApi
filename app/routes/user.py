@@ -7,7 +7,7 @@ from typing import Annotated, List
 
 user_router = APIRouter()
 
-@user_router.post('/user/create', response_model=UserResponse)
+@user_router.post('/user/create', tags=["User"], summary="Создает нового пользователя", response_model=UserResponse)
 async def create_user(
         user: Annotated[UserCreate, Body(..., example={"name": "dasha", "age": 88})],
         db: Session = Depends(get_db)
@@ -26,7 +26,7 @@ async def create_user(
     db.refresh(new_user)
     return UserResponse(id=new_user.id, name=new_user.name, age=new_user.age) # type: ignore
 
-@user_router.get('/user/{id}', response_model=UserResponse)
+@user_router.get('/user/{id}',  tags=["User"], summary="Получает информацию о пользователе по его ID",response_model=UserResponse)
 async def get_user(id: int, db: Session = Depends(get_db)) -> UserResponse:
     """
     Получает информацию о пользователе по его ID.
@@ -40,7 +40,7 @@ async def get_user(id: int, db: Session = Depends(get_db)) -> UserResponse:
         raise HTTPException(status_code=404, detail="User not found")
     return UserResponse(id=user.id, name=user.name, age=user.age) # type: ignore
 
-@user_router.get('/users', response_model=List[UserResponse])
+@user_router.get('/users',  tags=["User"], summary="Получает список всех пользователей",response_model=List[UserResponse])
 async def get_users(db: Session = Depends(get_db)) -> List[UserResponse]:
     """
     Получает список всех пользователей.
@@ -50,7 +50,7 @@ async def get_users(db: Session = Depends(get_db)) -> List[UserResponse]:
     users = db.query(UserModel).all()
     return [UserResponse(id=user.id, name=user.name, age=user.age) for user in users] # type: ignore
 
-@user_router.delete('/user/{user_id}', response_model=dict)
+@user_router.delete('/user/{user_id}', tags=["User"], summary="Удаляет пользователя по его ID", response_model=dict)
 async def delete_user(user_id: int, db: Session = Depends(get_db)) -> dict:
     """
     Удаляет пользователя по его ID.

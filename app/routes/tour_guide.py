@@ -7,7 +7,7 @@ from utils.helpers import get_db
 
 tour_guide_router = APIRouter()
 
-@tour_guide_router.post('/tour_guide/create', response_model=TourGuideResponse)
+@tour_guide_router.post('/tour_guide/create', tags=["Tour Guide"], summary="Создает нового гида по турам",response_model=TourGuideResponse)
 async def create_tour_guide(tour_guide: TourGuideCreate, db: Session = Depends(get_db)) -> TourGuide:
     """
     Создает нового гида по турам.
@@ -31,7 +31,7 @@ async def create_tour_guide(tour_guide: TourGuideCreate, db: Session = Depends(g
     db.refresh(db_tour_guide)
     return db_tour_guide
 
-@tour_guide_router.get('/tour_guides/', response_model=List[TourGuideResponse])
+@tour_guide_router.get('/tour_guides/', tags=["Tour Guide"], summary="Возвращает список всех гидов по турам, включая информацию о городе",response_model=List[TourGuideResponse])
 def read_tour_guides(db: Session = Depends(get_db)) -> List[TourGuide]:
     """
     Возвращает список всех гидов по турам, включая информацию о городе.
@@ -39,7 +39,7 @@ def read_tour_guides(db: Session = Depends(get_db)) -> List[TourGuide]:
     """
     return db.query(TourGuide).options(joinedload(TourGuide.city)).all()
 
-@tour_guide_router.get('/tour_guide/{id}', response_model=TourGuideResponse)
+@tour_guide_router.get('/tour_guide/{id}',tags=["Tour Guide"], summary="Находит гида по ID", response_model=TourGuideResponse)
 async def search_tour_guide(id: int, db: Session = Depends(get_db)):
     """
     Находит гида по ID.
@@ -51,7 +51,7 @@ async def search_tour_guide(id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Tour guide not found")
     return tour_guide
 
-@tour_guide_router.delete('/tour_guide/{id}')
+@tour_guide_router.delete('/tour_guide/{id}',tags=["Tour Guide"], summary="Удаляет гида по указанному ID")
 async def delete_tour_guide(id: int, db: Session = Depends(get_db)):
     """
     Удаляет гида по указанному ID.
@@ -64,7 +64,7 @@ async def delete_tour_guide(id: int, db: Session = Depends(get_db)):
     db.commit()
     return {"message": "Tour guide deleted successfully"}
 
-@tour_guide_router.put('/tour_guide/{id}', response_model=TourGuideResponse)
+@tour_guide_router.put('/tour_guide/{id}',tags=["Tour Guide"], summary="Обновляет информацию о гиде по указанному ID", response_model=TourGuideResponse)
 async def update_tour_guide(id: int, tour_guide: TourGuideCreate, db: Session = Depends(get_db)):
     """
     Обновляет информацию о гиде по указанному ID.
@@ -82,7 +82,7 @@ async def update_tour_guide(id: int, tour_guide: TourGuideCreate, db: Session = 
     return db_tour_guide
 
 
-@tour_guide_router.get('/tour_guide/{city_id}', response_model=list[TourGuideResponse])
+@tour_guide_router.get('/tour_guide/{city_id}', tags=["Tour Guide"], summary="Получает список туристических гидов для указанного города по его ID",response_model=list[TourGuideResponse])
 async def get_guides_by_city(city_id: int, db: Session = Depends(get_db)) -> List[TourGuide]:
     """
     Получает список туристических гидов для указанного города по его ID.

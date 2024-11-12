@@ -8,7 +8,7 @@ from utils.helpers import get_db
 
 city_router = APIRouter()
 
-@city_router.post("/city/create", response_model=CityResponse)
+@city_router.post("/city/create",  tags=["City"], summary="Создать новый город", response_model=CityResponse)
 async def create_city(city: CityCreate, db: Session = Depends(get_db)) -> CityResponse:
     """
     Создает новый город.
@@ -33,7 +33,7 @@ async def create_city(city: CityCreate, db: Session = Depends(get_db)) -> CityRe
     return db_city
 
 
-@city_router.get("/cities", response_model=list[CityResponse])
+@city_router.get("/cities", tags=["City"], summary="Получает список всех городов",response_model=list[CityResponse])
 async def get_cities(db: Session = Depends(get_db)) -> list[City]:
     """
     Получает список всех городов.
@@ -43,7 +43,7 @@ async def get_cities(db: Session = Depends(get_db)) -> list[City]:
     return cities
 
 
-@city_router.get("/city", response_model=CityResponse)
+@city_router.get("/city", tags=["City"], summary="Ищет город по ID или по фильтру",response_model=CityResponse)
 async def search_city(
         id: int = Query(None, ge=1, le=50, description="ID города для поиска. Должен быть в пределах от 1 до 50."),
         filter: str = Query(None, description="Часть названия города для фильтрации.")
@@ -68,7 +68,7 @@ async def search_city(
         raise HTTPException(status_code=404, detail="City not found")
     return city
 
-@city_router.delete("/city/{city_id}", response_model=dict)
+@city_router.delete("/city/{city_id}", tags=["City"], summary="Удаляет город по ID",response_model=dict)
 async def delete_city(city_id: int, db: Session = Depends(get_db)) -> dict:
     """
     Удаляет город по ID.
@@ -85,7 +85,7 @@ async def delete_city(city_id: int, db: Session = Depends(get_db)) -> dict:
     return {"message": "City deleted successfully"}
 
 
-@city_router.put("/city/{city_id}", response_model=CityResponse)
+@city_router.put("/city/{city_id}", tags=["City"], summary="Обновляет информацию о городе",response_model=CityResponse)
 async def update_city(city_id: int, city: CityCreate, db: Session = Depends(get_db)) -> CityResponse:
     """
     Обновляет информацию о городе.
@@ -106,7 +106,7 @@ async def update_city(city_id: int, city: CityCreate, db: Session = Depends(get_
     return db_city
 
 
-@city_router.get('/city/{city_id}/travels', response_model=list[TravelResponse])
+@city_router.get('/city/{city_id}/travels', tags=["City"], summary="Поиск вес travels в укащанов гораде",response_model=list[TravelResponse])
 async def get_travels_by_city(city_id: int, db: Session = Depends(get_db)) -> List[Travel]:
     """
     поиск вес travels в укащанов гораде.
