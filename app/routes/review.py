@@ -32,7 +32,7 @@ async def create_review(
         rating=new_review.rating,  # type: ignore
         comment=new_review.comment,  # type: ignore
         created_at=new_review.created_at,  # type: ignore
-        user_id=review.user_id,  # Исправлено на использование user_id из объекта review
+        user_id=review.user_id,
         travel=TravelResponse(id=review.travel_id)  # type: ignore
     )
 
@@ -100,3 +100,20 @@ async def update_review(review_id: int, review: ReviewCreate, db: Session = Depe
     db.commit()
     db.refresh(db_review)
     return db_review
+
+@review_router.get('/reviews/{travel_id}', tags=["Reviews"], summary="Получить отзывы для конкретного путешествия")
+async def get_reviews_for_travel(
+    travel_id: int,
+    db: Session = Depends(get_db)
+) -> List[ReviewResponse]:
+    """
+    Получает отзывы для указанного путешествия.
+
+    - **travel_id**: Идентификатор путешествия для получения отзывов.
+
+    Возвращает список отзывов для указанного путешествия.
+    """
+    reviews = db.query(ReviewModel).filter(ReviewModel.travel_id == travel_id).all()
+    if not reviews:
+        raise HTTPException(status_code=404, detail="Отзывы для данного путешествия не найдены")
+    return reviews
