@@ -7,6 +7,8 @@ from typing import Annotated, List
 
 user_router = APIRouter()
 
+fake_session_store = {}
+
 @user_router.post('/user/create', tags=["User"], summary="Создает нового пользователя", response_model=UserResponse)
 async def create_user(
         user: Annotated[UserCreate, Body(..., example={"name": "dasha", "age": 88})],
@@ -67,13 +69,34 @@ async def delete_user(user_id: int, db: Session = Depends(get_db)) -> dict:
     return {"message": "User deleted successfully"}
 
 
-# @user_router.get('/user/{user_id}/orders', response_model=list[OrderResponse])
-# async def get_user_orders(user_id: int, db: Session = Depends(get_db)) -> List[Order]:
-#     orders = db.query(Order).filter(Order.user_id == user_id).all()
-#     return orders
+@user_router.post('/user/login', tags=["User"], summary="Логин пользователя")
+async def login(user: Annotated[UserCreate, Body(..., example={"name": "dasha", "age": 88})], db: Session = Depends(get_db)):
+    """
+    Логин пользователя.
+
+    - **name**: Имя пользователя.
+    - **age**: Возраст пользователя.
+
+    Возвращает сообщение об успешном логине или ошибку.
+    """
+    db_user = db.query(UserModel).filter(UserModel.name == user.name, UserModel.age == user.age).first()
+    if db_user is None:
+        raise HTTPException(status_code=401, detail="Invalid credentials")
+    session_token = f"session-{db_user.id}"
+    fake_session_store[session_token] = db_user.id
+    return {"message": "Login successful", "session_token": session_token}
 
 
-# @user_router.get('/user/{user_id}/reviews', response_model=list[ReviewResponse])
-# async def get_user_reviews(user_id: int, db: Session = Depends(get_db)) -> List[Review]:
-#     reviews = db.query(Review).filter(Review.user_id == user_id).all()
-#     return reviews    
+@user_router.post('/user/logout', tags=["User"], summary="Выход из аккаунта")
+async def logout(session_token: str = Body(...)):
+    """
+    Выход из аккаунта.
+
+    - **session_token**: Токен сессии.
+
+    Возвращает сообщение об успешном выходе.
+    """
+    if session_token in fake_session_store:
+        del fake_session_store[session_token]
+        return {"message": "Logout successful"}
+    raise HTTPException(status_code=404, detail="Session token not found")
