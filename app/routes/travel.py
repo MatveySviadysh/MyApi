@@ -1,9 +1,11 @@
-from typing import List
+from datetime import date
+from typing import List, Optional
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session, joinedload
 from database.models import Travel
 from models.travel_model import TravelCreate, TravelResponse
 from utils.helpers import get_db
+from pydantic import parse_obj_as
 
 travel_router = APIRouter()
 
@@ -127,3 +129,60 @@ async def update_travel(id: int, travel: TravelCreate, db: Session = Depends(get
     db.commit()
     db.refresh(db_travel)
     return db_travel
+
+
+@travel_router.get('/travels/search', tags=["Travel"], summary="Поиск путешествий по заданным фильтрам")
+async def search_travels(
+    start_date: Optional[date] = None,
+    end_date: Optional[date] = None,
+    min_price: Optional[float] = None,
+    max_price: Optional[float] = None,
+    name_city: Optional[str] = None,
+    duration: Optional[str] = None,
+    db: Session = Depends(get_db)
+) -> List[TravelResponse]:
+    """
+    Поиск путешествий по заданным фильтрам.
+    У данного метода есть следующие параметры фильтрации:
+
+    - **start_date**: Дата начала путешествия (необязательно).
+    - **end_date**: Дата окончания путешествия (необязательно).
+    - **min_price**: Минимальная цена (необязательно).
+    - **max_price**: Максимальная цена (необязательно).
+    - **name_city**: Название города (необязательно).
+    - **duration**: Продолжительность путешествия (необязательно).
+
+    Возвращает список путешествий, соответствующих указанным фильтрам.
+    """
+    query = db.query(Travel)
+    filters = [
+        Travel.name_city == name_city if name_city else None,
+        Travel.start_date >= start_date if start_date else None,
+        Travel.end_date <= end_date if end_date else None,
+        Travel.price >= min_price if min_price is not None else None,
+        Travel.price <= max_price if max_price is not None else None,
+        Travel.duration == duration if duration is not None else None,
+    ]
+    for condition in filters:
+        if condition is not None:
+            query = query.filter(condition)
+    
+    travels = query.all()
+    if not travels:
+        raise HTTPException(status_code=404, detail="Путешествия не найдены с заданными фильтрами")
+    
+    travel_responses = [
+        TravelResponse(
+            id=travel.id,
+            name=travel.name,
+            description=travel.description,
+            price=travel.price,
+            duration=travel.duration,
+            start_date=travel.start_date,
+            end_date=travel.end_date,
+            image_url=travel.image_url,
+            city_id=travel.city_id,
+            guide_id=travel.guide_id,
+        ) for travel in travels
+    ]
+    return travel_responses

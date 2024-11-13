@@ -10,7 +10,7 @@ class TravelCreate(TravelBase):
 
 class TravelResponse(TravelBase):
     id: int
-    city: CityResponse
-    guide: TourGuideResponse
+    city: Optional[CityResponse] = None
+    guide: Optional[TourGuideResponse] = None
     class Config:
         orm_mode = True
